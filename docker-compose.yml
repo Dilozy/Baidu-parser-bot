@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    image: dilozy/baidu-parser-bot:latest
+    container_name: bot
+    build: .
+    depends_on:
+      - db
+      - selenium
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+
+  db:
+   image: postgres
+   container_name: postgres_DB
+   restart: always
+   environment:
+    POSTGRES_PASSWORD: $PASSWORD
+    POSTGRES_DB: Bot_DB
+   ports:
+    - "5432:5432"
+   volumes:
+    - my_db:/var/lib/postgresql/data  
+   env_file:
+    - .env
+  
+  selenium:
+    image: seleniarm/standalone-chromium:latest
+    container_name: chrome
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      - "7900:7900"
+    shm_size: 2gb
+
+volumes:
+  my_db:
